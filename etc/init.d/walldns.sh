@@ -21,7 +21,8 @@
 # Source networking configuration
 . /etc/sysconfig/network
 
-prog=PREFIX/sbin/walldns
+prog=walldns
+exec=PREFIX/sbin/walldns
 config=/etc/ndjbdns/walldns.conf
 logfile=/var/log/walldns.log
 lockfile=/var/lock/subsys/walldns
@@ -31,8 +32,8 @@ lockfile=/var/lock/subsys/walldns
 start() {
     [ -x $prog ] || exit 5
     [ -f $config ] || exit 6
-    echo -n $"Starting ${prog##[a-z/.]*/}: "
-    daemon $prog -D 2>> $logfile
+    echo -n $"Starting ${prog}: "
+    daemon $exec -D 2>> $logfile
     RETVAL=$?
     echo
     [ $RETVAL -eq 0 ] && touch $lockfile
@@ -40,8 +41,8 @@ start() {
 }
 
 stop() {
-    echo -n $"Stopping ${prog##[a-z/.]*/}: "
-    killproc $prog
+    echo -n $"Stopping ${prog}: "
+    killproc $exec
     RETVAL=$?
     echo
     [ $RETVAL -eq 0 ] && rm -f $lockfile
